@@ -2,7 +2,6 @@ import os
 import sys
 from file_utils import read_file, write_file, find_files_by_extension
 from translator import CodeTranslator
-from utils import extract_code_block
 
 # Map target languages to file extensions
 LANGUAGE_EXTENSION_MAP = {
@@ -46,6 +45,10 @@ def translate_codebase(
         # Read source code
         source_code = read_file(source_file)
 
+        # Fetch token count
+        token_count = translator.get_token_count(source_code)
+        print(f"Processing file: {source_file} (Token Count: {token_count})")
+
         # Translate the code
         print(f"Translating file: {source_file}")
         translated_response = translator.translate_code(
@@ -55,9 +58,9 @@ def translate_codebase(
         )
 
         # Extract the code block
-        translated_code = extract_code_block(translated_response, target_lang)
+        # translated_code = extract_code_block(translated_response, target_lang)
 
-        if translated_code:
+        if translated_response:
             # Define the output path
             base_name = os.path.splitext(os.path.basename(source_file))[0]
             output_file = os.path.join(output_dir, base_name + target_extension)
@@ -66,7 +69,7 @@ def translate_codebase(
             os.makedirs(output_dir, exist_ok=True)
 
             # Write the translated code
-            write_file(output_file, translated_code)
+            write_file(output_file, translated_response)
             print(f"Translated file written to: {output_file}")
         else:
             print(f"Skipping file: {source_file} (no valid translation found)")
