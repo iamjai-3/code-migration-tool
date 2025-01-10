@@ -24,8 +24,8 @@ class CodeTranslator:
                 messages=[{"role": "user", "content": text}],
             )
             return response.input_tokens
-        except Exception as e:
-            print(f"Error fetching token count: {e}")
+        except Exception:
+            # print(f"Error fetching token count: {e}")
             return 0
 
     def split_into_chunks(self, text: str, max_tokens: int):
