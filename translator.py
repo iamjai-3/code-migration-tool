@@ -123,9 +123,7 @@ class CodeTranslator:
             # Translate the full code if within the limit
             return self.translate_chunk(source_code, source_lang, target_lang)
 
-        chunks = self.split_into_chunks(
-            source_code, self.token_limit - 500
-        )  # Reserve tokens for prompt
+        chunks = self.split_into_chunks(source_code, self.token_limit - 500)
         translated_chunks = []
 
         for chunk in chunks:
