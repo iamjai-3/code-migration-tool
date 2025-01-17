@@ -24,4 +24,4 @@ reports/
 poetry.lock
 .poetry
 .env
-dest/
+/dest
