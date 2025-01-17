@@ -1,11 +1,4 @@
-// Note: JavaScript's Math.random() is used instead of Python's random module
-// as JavaScript doesn't have a direct equivalent of Python's randint
-
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+let random = Math.random;
 
 function deposit(balance, amount) {
     if (amount > 0) {
@@ -36,10 +29,7 @@ function calculateAreaOfCircle(radius) {
 function generateRandomPassword(length) {
     if (length > 0) {
         const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-        return Array(length)
-            .fill(null)
-            .map(() => characters.charAt(Math.floor(Math.random() * characters.length)))
-            .join('');
+        return Array.from({length: length}, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
     }
     return "Length must be positive";
 }
@@ -76,11 +66,12 @@ function convertCelsiusToFahrenheit(celsius) {
 }
 
 function countVowels(s) {
-    return Array.from(s.toLowerCase()).filter(char => "aeiou".includes(char)).length;
+    return [...s.toLowerCase()].reduce((count, char) => 
+        "aeiou".includes(char) ? count + 1 : count, 0);
 }
 
 function findMax(numbers) {
-    if (numbers.length) {
+    if (numbers.length > 0) {
         return Math.max(...numbers);
     }
     return "List is empty";
@@ -98,7 +89,7 @@ function factorial(n) {
 }
 
 function checkPalindrome(s) {
-    return s === [...s].reverse().join('');
+    return s === s.split('').reverse().join('');
 }
 
 function mergeTwoLists(list1, list2) {
@@ -106,12 +97,14 @@ function mergeTwoLists(list1, list2) {
 }
 
 function sortNumbers(numbers) {
-    return numbers.sort((a, b) => a - b);
+    return numbers.slice().sort((a, b) => a - b);
 }
 
 function findGcd(a, b) {
     while (b) {
-        [a, b] = [b, a % b];
+        const temp = b;
+        b = a % b;
+        a = temp;
     }
     return a;
 }
@@ -120,7 +113,7 @@ function generateEvenNumbers(limit) {
     return Array.from({length: limit + 1}, (_, i) => i).filter(num => num % 2 === 0);
 }
 
-function convertToUppercase(s) {
+function convertToUpperCase(s) {
     return s.toUpperCase();
 }
 
@@ -132,7 +125,7 @@ function calculateBmi(weight, height) {
 }
 
 function countWords(s) {
-    return s.split(/\s+/).length;
+    return s.split(' ').length;
 }
 
 function findMin(numbers) {
@@ -143,7 +136,7 @@ function findMin(numbers) {
 }
 
 function removeDuplicates(numbers) {
-    return [...new Set(numbers)];
+    return Array.from(new Set(numbers));
 }
 
 function calculatePower(base, exponent) {
@@ -158,12 +151,12 @@ function isOdd(num) {
     return num % 2 !== 0;
 }
 
-function squareNumbers(numbers) {
+const squareNumbers = (numbers) => {
     return numbers.map(num => num ** 2);
-}
+};
 
 function isAnagram(s1, s2) {
-    return [...s1].sort().join('') === [...s2].sort().join('');
+    return s1.split('').sort().join('') === s2.split('').sort().join('');
 }
 
 function sumOfList(numbers) {
@@ -171,8 +164,8 @@ function sumOfList(numbers) {
 }
 
 function averageOfList(numbers) {
-    if (numbers.length > 0) {
-        return numbers.reduce((a, b) => a + b) / numbers.length;
+    if (numbers.length) {
+        return numbers.reduce((a, b) => a + b, 0) / numbers.length;
     }
     return "List is empty";
 }
@@ -182,19 +175,19 @@ function generateMultiplicationTable(number, limit) {
 }
 
 function reverseList(lst) {
-    return lst.slice().reverse();
+    return [...lst].reverse();
 }
 
 function capitalizeWords(s) {
     return s.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
-function findUniqueElements(arr) {
-    return [...new Set(arr)];
+function findUniqueElements(lst) {
+    return Array.from(new Set(lst));
 }
 
 function flattenNestedList(nestedList) {
-    return nestedList.reduce((flat, subList) => flat.concat(subList), []);
+    return nestedList.reduce((flat, sublist) => flat.concat(sublist), []);
 }
 
 function countOccurrences(arr, value) {
@@ -202,7 +195,7 @@ function countOccurrences(arr, value) {
 }
 
 function getUniqueVowels(s) {
-    return new Set([...s.toLowerCase()].filter(char => 'aeiou'.includes(char)));
+    return new Set([...s.toLowerCase()].filter(char => "aeiou".includes(char)));
 }
 
 function calculateSpeed(distance, time) {
@@ -212,9 +205,9 @@ function calculateSpeed(distance, time) {
     return distance / time;
 }
 
-const multiplyList = (numbers, multiplier) => {
+function multiplyList(numbers, multiplier) {
     return numbers.map(num => num * multiplier);
-};
+}
 
 function findSecondLargest(numbers) {
     if (numbers.length < 2) {

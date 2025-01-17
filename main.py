@@ -60,30 +60,13 @@ def translate_codebase(
         # Extract the code block
         # translated_code = extract_code_block(translated_response, target_lang)
 
-        # if translated_response:
-        #     # Define the output path
-        #     base_name = os.path.splitext(os.path.basename(source_file))[0]
-        #     output_file = os.path.join(output_dir, base_name + target_extension)
-
-        #     # Ensure the output directory exists
-        #     os.makedirs(output_dir, exist_ok=True)
-
-        #     # Write the translated code
-        #     write_file(output_file, translated_response)
-        #     print(f"Translated file written to: {output_file}")
-
         if translated_response:
-            # Compute the relative path of the source file
-            relative_path = os.path.relpath(source_file, source_dir)
+            # Define the output path
+            base_name = os.path.splitext(os.path.basename(source_file))[0]
+            output_file = os.path.join(output_dir, base_name + target_extension)
 
-            # Replace the file extension with the target extension
-            relative_path = os.path.splitext(relative_path)[0] + target_extension
-
-            # Define the output file path in the destination directory
-            output_file = os.path.join(output_dir, relative_path)
-
-            # Ensure the output directory for the file exists
-            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            # Ensure the output directory exists
+            os.makedirs(output_dir, exist_ok=True)
 
             # Write the translated code
             write_file(output_file, translated_response)

@@ -1,5 +1,6 @@
 import anthropic
 from config import API_KEY, MODEL, MAX_TOKENS
+from utils import display_progress
 
 
 class CodeTranslator:
@@ -50,7 +51,9 @@ class CodeTranslator:
         current_chunk = []
         current_token_count = 0
 
-        for line in lines:
+        total_lines = len(lines)
+
+        for idx, line in enumerate(lines):
             line_token_count = self.get_token_count(line)
 
             if current_token_count + line_token_count > max_tokens and (
@@ -63,6 +66,9 @@ class CodeTranslator:
             else:
                 current_chunk.append(line)
                 current_token_count += line_token_count
+
+            # Display progress for chunking
+            display_progress(idx + 1, total_lines, prefix="Chunking Progress")
 
         # Add the last chunk if exists
         if current_chunk:
@@ -126,8 +132,11 @@ class CodeTranslator:
         chunks = self.split_into_chunks(source_code, self.token_limit - 500)
         translated_chunks = []
 
-        for chunk in chunks:
+        total_chunks = len(chunks)
+        for i, chunk in enumerate(chunks):
             translated_chunk = self.translate_chunk(chunk, source_lang, target_lang)
             translated_chunks.append(translated_chunk)
 
+            display_progress(i + 1, total_chunks, prefix="Translation Progress")
+        print("\nFile translation completed.")
         return "\n\n".join(translated_chunks)
