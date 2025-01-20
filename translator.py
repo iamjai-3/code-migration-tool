@@ -9,7 +9,7 @@ class CodeTranslator:
     Handles translation of code using Anthropics API.
     """
 
-    def __init__(self, api_key: str = API_KEY, model: str = MODEL, token_limit=50):
+    def __init__(self, api_key: str = API_KEY, model: str = MODEL, token_limit=250):
         self.client = anthropic.Anthropic(api_key=api_key)
         self.model = model
         self.token_limit = token_limit
