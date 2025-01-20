@@ -1,6 +1,7 @@
 import anthropic
 from config import API_KEY, MODEL, MAX_TOKENS
 from utils import display_progress
+import re
 
 
 class CodeTranslator:
@@ -29,7 +30,50 @@ class CodeTranslator:
             # print(f"Error fetching token count: {e}")
             return 0
 
-    def split_into_chunks(self, text: str, max_tokens: int):
+    def is_definition_line(self, line: str, language: str) -> bool:
+        """
+        Check if a line starts a new class, function, or language-specific definition.
+        :param line: The line to check.
+        :param language: The programming language of the code.
+        :return: True if the line starts a new definition; otherwise, False.
+        """
+        stripped = line.strip()
+
+        # Define patterns for each language
+        language_patterns = {
+            "python": [r"^class\s", r"^def\s", r"^@", r"^#"],
+            "php": [r"^class\s", r"^function\s", r"^namespace\s", r"^<\?php"],
+            "javascript": [
+                r"^class\s",
+                r"^function\s",
+                r"^const\s",
+                r"^let\s",
+                r"^var\s",
+            ],
+            "typescript": [
+                r"^class\s",
+                r"^function\s",
+                r"^const\s",
+                r"^let\s",
+                r"^var\s",
+            ],
+            "java": [
+                r"^class\s",
+                r"^public\s",
+                r"^private\s",
+                r"^protected\s",
+                r"^interface\s",
+            ],
+            "ruby": [r"^class\s", r"^def\s", r"^module\s"],
+        }
+
+        # Retrieve patterns for the specified language, defaulting to a generic set
+        patterns = language_patterns.get(
+            language.lower(), [r"^class\s", r"^function\s"]
+        )
+        return any(re.match(pattern, stripped) for pattern in patterns)
+
+    def split_into_chunks(self, text: str, max_tokens: int, language: str):
         """
         Split the text into chunks that do not exceed the token limit.
         :param text: The input text to split.
@@ -37,14 +81,14 @@ class CodeTranslator:
         :return: List of text chunks.
         """
 
-        def is_definition_line(line: str) -> bool:
-            """Check if line starts a new class or function definition."""
-            stripped = line.strip()
-            return (
-                stripped.startswith("class ")
-                or stripped.startswith("def ")
-                or stripped.startswith("@")
-            )
+        # def is_definition_line(line: str) -> bool:
+        #     """Check if line starts a new class or function definition."""
+        #     stripped = line.strip()
+        #     return (
+        #         stripped.startswith("class ")
+        #         or stripped.startswith("def ")
+        #         or stripped.startswith("@")
+        #     )
 
         lines = text.splitlines()
         chunks = []
@@ -57,7 +101,7 @@ class CodeTranslator:
             line_token_count = self.get_token_count(line)
 
             if current_token_count + line_token_count > max_tokens and (
-                is_definition_line(line) or not current_chunk
+                self.is_definition_line(line, language) or not current_chunk
             ):
                 if current_chunk:
                     chunks.append("\n".join(current_chunk))
@@ -129,7 +173,9 @@ class CodeTranslator:
             # Translate the full code if within the limit
             return self.translate_chunk(source_code, source_lang, target_lang)
 
-        chunks = self.split_into_chunks(source_code, self.token_limit - 500)
+        chunks = self.split_into_chunks(
+            source_code, self.token_limit - 500, source_lang
+        )
         translated_chunks = []
 
         total_chunks = len(chunks)

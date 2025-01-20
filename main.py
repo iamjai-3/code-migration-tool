@@ -10,6 +10,7 @@ LANGUAGE_EXTENSION_MAP = {
     "java": ".java",
     "typescript": ".ts",
     "ruby": ".rb",
+    "php": ".php",
     # Add more mappings as needed
 }
 
@@ -29,11 +30,17 @@ def translate_codebase(
     # Get the appropriate file extension for the target language
     target_extension = LANGUAGE_EXTENSION_MAP.get(target_lang.lower(), ".txt")
 
-    # Find all source files
-    extensions = (
-        [".py"] if source_lang.lower() == "python" else []
-    )  # Extend this as needed
-    source_files = find_files_by_extension(source_dir, extensions)
+    source_extension = LANGUAGE_EXTENSION_MAP.get(source_lang.lower())
+
+    if not source_extension:
+        print(f"Unsupported source language: {source_lang}")
+        return
+
+    # # Find all source files
+    # extensions = (
+    #     [".py"] if source_lang.lower() == "python" else []
+    # )  # Extend this as needed
+    source_files = find_files_by_extension(source_dir, [source_extension])
 
     if not source_files:
         print("No files found to translate.")
