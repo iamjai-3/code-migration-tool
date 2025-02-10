@@ -81,15 +81,6 @@ class CodeTranslator:
         :return: List of text chunks.
         """
 
-        # def is_definition_line(line: str) -> bool:
-        #     """Check if line starts a new class or function definition."""
-        #     stripped = line.strip()
-        #     return (
-        #         stripped.startswith("class ")
-        #         or stripped.startswith("def ")
-        #         or stripped.startswith("@")
-        #     )
-
         lines = text.splitlines()
         chunks = []
         current_chunk = []
@@ -157,10 +148,10 @@ class CodeTranslator:
                     ],
                 )
                 return message.content[0].text
-            except Exception as e:
+            except RuntimeError as e:
                 retries += 1
                 if retries == max_retries:
-                    raise Exception(
+                    raise RuntimeError(
                         f"Failed to translate chunk after {max_retries} attempts: {str(e)}"
                     )
 
