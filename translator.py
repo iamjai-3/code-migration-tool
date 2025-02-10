@@ -131,9 +131,16 @@ class CodeTranslator:
         :return: Translated chunk.
         """
         prompt = f"""You are an expert programmer specializing in translating code from {source_lang} to {target_lang}. 
-        Translate the code while maintaining its functionality and following best practices in {target_lang}.
-        Preserve comments and documentation when possible, translating them appropriately.
-        Only output the translated code without any explanations or markdown formatting."""
+        1. Translate the code while maintaining its functionality and following best practices in {target_lang}.
+        2. Preserve comments and documentation when possible, translating them appropriately.
+        3. Only output the translated code without any explanations or markdown formatting.
+        4. And initialize the respective project setup for {target_lang} for example package.json for node.js.
+        5. Always create package.json file separately for javascript conversions and add it only to root file.
+        6. Follow the instructions strictly.
+        7. Always translate the code in {target_lang} and dont translate the code in {source_lang}.
+        8. Dont change the file names or folder names.
+        10. Follow code standards.        
+        """
 
         retries = 0
         while retries < max_retries:
